@@ -9,18 +9,10 @@ define(function(require, exports, module) {
      * @lends Alpaca.Fields.ReadonlyTextField.prototype
      */
     {
-        originalValue: null,
-
         onChange: function()
         {
             var self = this;
-
             self.base();
-
-            var value = self.getValue();
-            if ("" === value) {
-                self.setValue(self._randomValue());
-            }
         },
 
         /**
@@ -37,13 +29,6 @@ define(function(require, exports, module) {
         {
             var self = this;
             var baseStatus = this.base();
-            var valInfo = this.validation;
-            var value = (this.getValue()+"").toLowerCase();
-
-            if (!self.originalValue) {
-                self.originalValue = value;
-            }
-
             return baseStatus;
         },
         
@@ -55,30 +40,13 @@ define(function(require, exports, module) {
             this.base();
         },
  
-        _getThisNodeId: function()
-        {
-            if (Alpaca.globalContext.document) {
-                return Alpaca.globalContext.document._doc;
-            }
-
-            var parts = window.location.hash.split('/');
-            var id = parts[4] || "";
-            return id;
-        },
-
-        beforeRenderControl: function(model, callback)
-        {
-            var self = this;
-
-            if (!!self.originalValue) {
-                self.readonly = true;
-            }
-            
-            return callback();
-        },
-
         afterRenderControl: function (model, callback) {
             var self = this;
+
+            if (Alpaca.globalContext.document) {
+                self.readonly = true;
+                self.disable();
+            }
 
             return callback();
         },
@@ -101,6 +69,5 @@ define(function(require, exports, module) {
     });
 
     Alpaca.registerFieldClass("readonly-text", Alpaca.Fields.ReadonlyTextField);
-
 });
 
